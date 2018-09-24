@@ -1,0 +1,17 @@
+html, body {
+    margin: 0px;
+    padding: 0px;
+}
+main {
+    width: 500px;
+    height: 700px;
+    margin: 20px auto;
+    background-color: lightgray;
+    overflow: hidden;
+}
+
+div {
+    position: relative;
+    top: 0px;
+    left: 0px;
+}
