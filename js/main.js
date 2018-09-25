@@ -5,12 +5,17 @@ const DEBUG = true;
 /* App Variables */
 var wordList = ["cat", "dog", "javascript", "peanut", "dolphin"];
 
-
 /* DOM and File references */
 var gameBody = {}; //holds the dom elements
-var wordFactory = gameWordFactory; //gameWordFactory.js
-var wordManager = wordManager; //inputHandler.js
+var gameCoordinator = gameCoordinator; //gameCoordinator.js
 
+//Dependencies:
+//main
+//  -gameCoordinator
+//    -wordFactory
+//    -wordManager
+//      -inputHandler 
+//  -dictionary?
 
 
 /* Functions */
@@ -28,17 +33,12 @@ function registerEventListeners() {
     });
 }
 
-function makeAGameWord() {
-    let randIdx = Math.floor(Math.random() * wordList.length);
-    let gameWord = wordFactory.makeWord(wordList[randIdx]);
-    wordManager.addWord(gameWord);
-    gameBody.prepend(gameWord.domElementRef);
-    
-
-
-
-    
-}
+// function makeAGameWord() {
+//     let randIdx = Math.floor(Math.random() * wordList.length);
+//     let gameWord = wordFactory.makeWord(wordList[randIdx]);
+//     wordManager.addWord(gameWord);
+//     gameBody.prepend(gameWord.domElementRef);
+// }
 
 /* Event Handlers */
 document.addEventListener("DOMContentLoaded", function(evt) {

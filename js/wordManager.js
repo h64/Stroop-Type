@@ -1,27 +1,15 @@
 "use strict"
+var inputHandler = inputHandler; //inputHandler.js
 
 var wordManager = (function() {
     var gameWords = []; //holds the gameWord objects    
     var currentWord = null;
 
     function handleKeyInput(key) {
-        let input = key.toLowerCase();
-        if(!keyInputIsValid(key)) return;
+        let input = inputHandler.strictToLowerCase(key);
+        if(!input) return;
         if(!currentWord) currentWord = findFirstMatchingWord(key);
         typeNextLetter(key); 
-    }
-
-    function keyInputIsValid(key) {
-        switch(key) {
-            case "a": case "b": case "c": case "d": case "e": case "f":
-            case "g": case "h": case "i": case "j": case "k": case "l":
-            case "m": case "n": case "o": case "p": case "q": case "r":
-            case "s": case "t": case "u": case "v": case "w": case "x":
-            case "y": case "z": 
-                return true;
-            default:
-                return false;
-        }
     }
 
     /*
@@ -41,34 +29,34 @@ var wordManager = (function() {
             return;
         }
 
-        //Otherwise, progress the gameWord to the next letter
+        //Otherwise, color letter
         let letters = currentWord.domElementRef.children;
         let span = letters[currentWord.nextCharIdx];
         setStyle(span);
 
-        //explode the gameWord if the word is finished
+        //then progress the gameWord to the next letter
         currentWord.nextCharIdx++;
-        if(currentWord.nextCharIdx === currentWord.word.length) {
-            //the word is done, make it go boom
-            //remove the word from the gameWords[] list
-            //set currentWord to null
-            removeWord();
-            return;
-        }
+
+        //explode the gameWord if the word is finished
+        if(currentWord.nextCharIdx === currentWord.word.length) 
+            deleteCurrentWord();  
+            
     }
 
-    function removeWord() {
-        //remove word from internal variables
+    function deleteCurrentWord() {
+        //remove word from internal array
         let idx = gameWords.indexOf(currentWord);
         gameWords.splice(idx, 1);
 
-        //remove word from dom
+        //remove word from dom 
         let domRef = currentWord.domElementRef;
         let parent = domRef.parentNode;
 
         //give the exploded word some style
         domRef.textContent = "BOOM";
         domRef.style.color = "yellow";
+
+        //delete element on a delay
         setTimeout(function() {
             parent.removeChild(domRef);
         }, 500);
@@ -82,7 +70,6 @@ var wordManager = (function() {
         });
         return firstWord === undefined ? null : firstWord;
     }
-
 
     function addWord(gameWord) {
         gameWords.push(gameWord);
@@ -110,6 +97,6 @@ var wordManager = (function() {
         addWord: addWord, 
         handleInput: handleKeyInput,
         stopAnimations: stopAnimations,
-        clear: clearAll
+        clearAll: clearAll
     };
 })();
