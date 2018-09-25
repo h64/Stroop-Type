@@ -6,15 +6,26 @@ main {
     width: 500px;
     height: 700px;
     margin: 20px auto;
+    text-align: center;
     background-color: lightgray;
     overflow: hidden;
     position: relative;
 }
 
-main div {
+.gameWord {
     position: absolute;
-    /* display: inline; */
-    /* background-color: blueviolet; */
     top: 0px;
     left: 0px;
+}
+
+h1 {
+    
+}
+
+h2 {
+
+}
+
+h3 {
+    
 }

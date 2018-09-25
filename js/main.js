@@ -1,38 +1,41 @@
 "use strict"
-/* Constants */
-const DEBUG = true;
-
-//Dependencies:
-//main
-//  -gameCoordinator
-//    -wordFactory
-//    -wordManager
-//      -inputHandler 
-//  -dictionary?
-
-/* App Variables */
 
 /* DOM and File references */
-var gameBody = {}; //holds the dom elements
+var nav = {};
+var normalGameStartBtn = {};
+var stroopGameStartBtn = {};
+var myStatsBtn = {};
+
 var gameCoordinator = gameCoordinator; //gameCoordinator.js
 
-
-
 /* Functions */
-function initGameVars() {
-    gameBody = document.querySelector("main");
+function initDomRefs() {
+    nav = document.querySelector("nav");
+    normalGameStartBtn = document.querySelector("#normalGameBtn");
+    stroopGameStartBtn = document.querySelector("#stroopGameBtn");
+    myStatsBtn = document.querySelector("#myStatsBtn");
 }
 
-
-
-
+function clearScreen() {
+    nav.style.display = "none";
+}
 
 /* Event Handlers */
 document.addEventListener("DOMContentLoaded", function(evt) {
-    if(DEBUG) console.log("DOM loaded");
-    initGameVars();
-    if(DEBUG) console.log("gameBody reference loaded");
-    gameCoordinator.start();
-    if(DEBUG) console.log("Game started");
-
+    initDomRefs();
+    registerEventListeners();
 });
+
+function registerEventListeners() {
+    normalGameStartBtn.addEventListener("click", function() {
+        clearScreen();
+        gameCoordinator.startGame();
+    });
+    stroopGameStartBtn.addEventListener("click", function() {
+        //load stroop game
+        clearScreen();
+    });
+    myStatsBtn.addEventListener("click", function() {
+        //load my stats page
+    });
+}

@@ -13,6 +13,7 @@ const MOVE_INTERVAL = 100;
 var gameWordFactory = (function() {
     function createDomElement(word) {
         let gameWordElement = document.createElement("div");
+        gameWordElement.classList.add("gameWord");
         //For each letter in the input string, create a span for that letter
         word.split("").forEach(letter => {
             let span = document.createElement("span");
