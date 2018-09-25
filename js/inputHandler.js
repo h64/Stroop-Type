@@ -19,12 +19,12 @@ var inputHandler = (function() {
         }
     }
 
-    function strictToLowercase(key) {
-        return keyInputIsValid(key) ? key.toLowercase : null; 
+    function strictToLowerCase(key) {
+        return (keyInputIsValid(key)) ? key.toLowerCase() : null; 
     }
 
     return {
-        strictToLowercase: strictToLowercase
+        strictToLowerCase: strictToLowerCase
     };
 })();
 
