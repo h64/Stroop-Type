@@ -5,8 +5,10 @@ const MOVE_AMT = 5;
 const MOVE_INTERVAL = 200;
 
 /*
-* A gameWord is an object that contains a word string, a remaininChar array,
-* a documentFragment that must be placed in the DOM, and a event?                       
+* A gameWord is an object that represents a word used in the typing game
+* including a string, a DOM element reference, and an animation.
+* The gameWordFactory exposes a single `makeWord()` method, which creates 
+* the gameWord from an input string.                        
 */
 var gameWordFactory = (function() {
     function createDomElement(word) {
@@ -17,7 +19,6 @@ var gameWordFactory = (function() {
             span.textContent = letter;
             gameWordElement.appendChild(span);
         }); 
-        // if(DEBUG) console.log(`gameWord ${word} created`);
         return gameWordElement; 
     };
 
@@ -31,15 +32,14 @@ var gameWordFactory = (function() {
 
         let animation = setInterval(function() {
             if(parseInt(style.top) > maxYPos) {
-                clearInterval(animation);
+                // clearInterval(animation);
                 let gameOver = new Event("gameover");
-                
                 document.dispatchEvent(gameOver);
             }
-            console.log(style.top);
             //else, increment the position
             style.top = parseInt(style.top) + MOVE_AMT + "px";
         }, MOVE_INTERVAL);
+        return animation;
     };
 
     function makeGameWord(aWord) {
@@ -48,7 +48,7 @@ var gameWordFactory = (function() {
             remainingChars: aWord.split(""),
             domElement: createDomElement(aWord),
         }
-        gameWord.movement = setMovement(gameWord.domElement);
+        gameWord.animation = setMovement(gameWord.domElement);
         return gameWord; 
     };
 

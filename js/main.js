@@ -3,8 +3,8 @@
 const DEBUG = true;
 
 /* App Variables */
-var gameBody = {};
-var gameWords = [];
+var gameBody = {}; //holds the dom elements
+var gameWords = []; //holds the gameWord objects
 
 var wordList = ["cat", "dog", "javascript"];
 
@@ -16,6 +16,10 @@ function initGameVars() {
 };
 function registerEventListeners() {
     document.addEventListener("gameover", function(evt) {
+        //Stop the animation on 
+        gameWords.forEach(function(gameWord) {
+            clearInterval(gameWord.animation);
+        });
         console.log("Your base is destroyed! Game over");
     });
     document.addEventListener("keypress", function(evt) {
