@@ -30,12 +30,13 @@ var gameWordFactory = (function() {
         style.top = "0px";
 
         let animation = setInterval(function() {
-            if(style.top > maxYPos) {
+            if(parseInt(style.top) > maxYPos) {
                 clearInterval(animation);
-                //signal that this gameWord needs to be deleted from
-                //gameWords array
-                //and also removed from gameBody
+                let gameOver = new Event("gameover");
+                
+                document.dispatchEvent(gameOver);
             }
+            console.log(style.top);
             //else, increment the position
             style.top = parseInt(style.top) + MOVE_AMT + "px";
         }, MOVE_INTERVAL);

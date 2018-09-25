@@ -15,6 +15,9 @@ function initGameVars() {
     gameBody = document.querySelector("main");
 };
 function registerEventListeners() {
+    document.addEventListener("gameover", function(evt) {
+        console.log("Your base is destroyed! Game over");
+    });
     document.addEventListener("keypress", function(evt) {
         inputHandler.input(evt.key)
     });
