@@ -15,6 +15,16 @@ A text typer game exploring the Stroop Effect
 ![my stats screen](https://i.imgur.com/B2WskxV.png)
 
 
+## Design Notes
+### Overall Design
+
+
+### Internal Objects and factories:
+
+
+
+
+
 ## Psuedocode
 ### On document load:
 	Display main menu:

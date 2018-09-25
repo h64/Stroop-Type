@@ -15,10 +15,23 @@ function initGameVars() {
     gameBody = document.querySelector("main");
 };
 function registerEventListeners() {
-    gameBody.addEventListener("keypress", function() {
-
+    document.addEventListener("keypress", function(evt) {
+        inputHandler.input(evt.key)
     });
 };
+
+function makeAGameWord() {
+    let randIdx = Math.floor(Math.random() * wordList.length);
+    let gameWord = gameWordFactory.makeWord(wordList[randIdx]);
+
+    gameBody.prepend(gameWord.domElement);
+    gameWords.push(gameWord);
+
+
+
+    
+}
+
 
 
 /* Event Handlers */
