@@ -48,17 +48,16 @@ var wordManager = (function() {
         let idx = gameWords.indexOf(currentWord);
         gameWords.splice(idx, 1);
 
-        //remove word from dom 
-        let domRef = currentWord.domElementRef;
-        let parent = domRef.parentNode;
-
+        //remove word from dom
         //give the exploded word some style
+        let wordToDelete = currentWord;
+        let domRef = wordToDelete.domElementRef;
         domRef.textContent = "BOOM";
         domRef.style.color = "yellow";
 
         //delete element on a delay
         setTimeout(function() {
-            parent.removeChild(domRef);
+            wordToDelete.removeSelfFromDom();
         }, 500);
 
         currentWord = null;

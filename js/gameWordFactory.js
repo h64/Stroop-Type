@@ -51,6 +51,10 @@ var gameWordFactory = (function() {
         gameWord.stopAnimation = function() {
             clearInterval(this.animation);
         };
+        gameWord.removeSelfFromDom = function() {
+            this.stopAnimation();
+            gameWord.domElementRef.parentNode.removeChild(gameWord.domElementRef);
+        };
         return gameWord; 
     }
 
