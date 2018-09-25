@@ -1,7 +1,7 @@
 "use strict"
 const GAME_WIDTH = 500;
 const GAME_HEIGHT = 700;
-const MOVE_AMT = 5;
+const MOVE_AMT = 50;
 const MOVE_INTERVAL = 200;
 
 /*
@@ -20,9 +20,9 @@ var gameWordFactory = (function() {
             gameWordElement.appendChild(span);
         }); 
         return gameWordElement; 
-    };
+    }
 
-    function setMovement(gameWordElement) {
+    function setAnimation(gameWordElement) {
         let randXPos = Math.floor(Math.random() * (GAME_WIDTH-75));
         let maxYPos = GAME_HEIGHT - 50;
         let style = gameWordElement.style;
@@ -32,7 +32,6 @@ var gameWordFactory = (function() {
 
         let animation = setInterval(function() {
             if(parseInt(style.top) > maxYPos) {
-                // clearInterval(animation);
                 let gameOver = new Event("gameover");
                 document.dispatchEvent(gameOver);
             }
@@ -40,19 +39,23 @@ var gameWordFactory = (function() {
             style.top = parseInt(style.top) + MOVE_AMT + "px";
         }, MOVE_INTERVAL);
         return animation;
-    };
+    }
 
     function makeGameWord(aWord) {
         let gameWord = {
             word: aWord,
-            remainingChars: aWord.split(""),
-            domElement: createDomElement(aWord),
+            nextCharIdx: 0,
+            domElementRef: createDomElement(aWord),
         }
-        gameWord.animation = setMovement(gameWord.domElement);
+        gameWord.animation = setAnimation(gameWord.domElementRef);
+        gameWord.stopAnimation = function() {
+            clearInterval(this.animation);
+        };
         return gameWord; 
-    };
+    }
 
     return {
         makeWord: makeGameWord, 
-    }
+    };
+
 })();
