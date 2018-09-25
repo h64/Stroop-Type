@@ -8,10 +8,13 @@ main {
     margin: 20px auto;
     background-color: lightgray;
     overflow: hidden;
+    position: relative;
 }
 
-div {
-    position: relative;
+main div {
+    position: absolute;
+    /* display: inline; */
+    /* background-color: blueviolet; */
     top: 0px;
     left: 0px;
 }

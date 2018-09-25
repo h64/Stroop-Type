@@ -2,7 +2,7 @@
 const GAME_WIDTH = 500;
 const GAME_HEIGHT = 700;
 const MOVE_AMT = 5;
-const MOVE_INTERVAL = 200;
+const MOVE_INTERVAL = 100;
 
 /*
 * A gameWord is an object that represents a word used in the typing game
@@ -23,8 +23,8 @@ var gameWordFactory = (function() {
     }
 
     function setAnimation(gameWordElement) {
-        let randXPos = Math.floor(Math.random() * (GAME_WIDTH-75));
-        let maxYPos = GAME_HEIGHT - 50;
+        let randXPos = Math.floor(Math.random() * (GAME_WIDTH-60));
+        let maxYPos = GAME_HEIGHT - 25;
         let style = gameWordElement.style;
 
         style.left = randXPos + "px";

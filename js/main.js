@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function(evt) {
     if(DEBUG) console.log("DOM loaded");
     initGameVars();
     if(DEBUG) console.log("gameBody reference loaded");
-    gameCoordinator.startGame();
+    gameCoordinator.start();
     if(DEBUG) console.log("Game started");
 
 });

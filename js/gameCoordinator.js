@@ -1,5 +1,10 @@
 "use strict"
 const STARTING_WORDS = 10;
+const SPAWN_INTERVAL = 500;
+const SPAWNER_NAME = "spawn";
+
+// const STARTING_WORDS = 1000;
+// const SPAWN_INTERVAL = 300;
 
 
 var wordManager = wordManager; //wordManager.js
@@ -9,38 +14,58 @@ var wordList = ["form","slave","cannon","fireman","carpenter","voyage","needle",
 
 
 var gameCoordinator = (function() {
+    var numWordsSpawned = 0;
+    var spawnerID = null;
+    function start() {
+        
+    }
+
     function startGame() {
         registerEventListeners();
-        if(DEBUG) console.log("Event Listeners Registered");
         let wordsToSpawn = STARTING_WORDS;
-        wordsToSpawn++; 
+
         startRound(wordsToSpawn);
-        if(DEBUG) console.log("Words spawned");
     }
 
     function startRound(numWordsToSpawn) {
-        for(let i = 0; i < numWordsToSpawn; i++) {
-            // setTimeout(function() {
-                let randIdx = Math.floor(Math.random() * wordList.length);
-                let gameWord = wordFactory.makeWord(wordList[randIdx]);
-                wordManager.addWord(gameWord);
-                //gameBody var dependency
-                gameBody.prepend(gameWord.domElementRef); 
-            // }, 100);
-        }
+        numWordsSpawned = 0;
+        startSpawner(numWordsToSpawn);
+
     }
 
     function endRound() {
-
+        stopSpawner();
+        numWordsSpawned = 0;
     }
+
+    
 
     function endGame() {
 
     }
 
+    function startSpawner(numWordsToSpawn) {
+        spawnerID = setInterval(spawn, SPAWN_INTERVAL);
+        function spawn() {
+            let randIdx = Math.floor(Math.random() * wordList.length);
+            let gameWord = wordFactory.makeWord(wordList[randIdx]);
+            wordManager.addWord(gameWord);
+            //gameBody var dependency
+            gameBody.prepend(gameWord.domElementRef); 
+            if(++numWordsSpawned === numWordsToSpawn) stopSpawner();
+        }
+    }
+
+    function stopSpawner() {
+        clearInterval(spawnerID);
+        spawnerID = null;
+    }
+
+
     function registerEventListeners() {
         document.addEventListener("gameover", function(evt) {
             wordManager.stopAnimations();
+            endRound();
             console.log("Your base is destroyed! Game over");
         });
         document.addEventListener("keypress", function(evt) {
@@ -49,7 +74,7 @@ var gameCoordinator = (function() {
     }
 
     return {
-        startGame: startGame,
+        start: start,
         endGame: endGame,
     };
 })();
