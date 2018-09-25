@@ -1,7 +1,7 @@
 "use strict"
 const GAME_WIDTH = 500;
 const GAME_HEIGHT = 700;
-const MOVE_AMT = 50;
+const MOVE_AMT = 5;
 const MOVE_INTERVAL = 200;
 
 /*

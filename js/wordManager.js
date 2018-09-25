@@ -9,9 +9,6 @@ var wordManager = (function() {
         if(!keyInputIsValid(key)) return;
         if(!currentWord) currentWord = findFirstMatchingWord(key);
         typeNextLetter(key); 
-        
-        // console.log(gameWords[0].domElementRef);
-        // console.log(currentWord);
     }
 
     function keyInputIsValid(key) {
@@ -47,7 +44,6 @@ var wordManager = (function() {
         //Otherwise, progress the gameWord to the next letter
         let letters = currentWord.domElementRef.children;
         let span = letters[currentWord.nextCharIdx];
-        console.log(span);
         setStyle(span);
 
         //explode the gameWord if the word is finished
@@ -65,16 +61,22 @@ var wordManager = (function() {
         //remove word from internal variables
         let idx = gameWords.indexOf(currentWord);
         gameWords.splice(idx, 1);
-        currentWord = null;
 
         //remove word from dom
-        console.log(gameWords);
-        console.log("boom");
+        let domRef = currentWord.domElementRef;
+        let parent = domRef.parentNode;
+
+        //give the exploded word some style
+        domRef.textContent = "BOOM";
+        domRef.style.color = "yellow";
+        setTimeout(function() {
+            parent.removeChild(domRef);
+        }, 500);
+
+        currentWord = null;
     }
 
     function findFirstMatchingWord(key) {
-        console.log("enter findFirst()");
-        console.log(gameWords);
         let firstWord = gameWords.find(function(gameWord) {
             if(key === gameWord.word[0]) return true;
         });
