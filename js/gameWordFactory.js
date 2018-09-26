@@ -12,7 +12,7 @@ var gameWordFactory = (function() {
     const GAME_HEIGHT = 700;
     const MOVE_AMT = 5;
     const MOVE_INTERVAL = 100;
-    
+
     function createDomElement(word) {
         let gameWordElement = document.createElement("div");
         gameWordElement.classList.add("gameWord");
@@ -57,6 +57,8 @@ var gameWordFactory = (function() {
         gameWord.removeSelfFromDom = function() {
             this.stopAnimation();
             gameWord.domElementRef.parentNode.removeChild(gameWord.domElementRef);
+            let evt = new CustomEvent("worddeleted");
+            document.dispatchEvent(evt);
         };
         return gameWord; 
     }

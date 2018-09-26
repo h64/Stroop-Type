@@ -1,106 +1,159 @@
 "use strict"
 
+
 var gameCoordinator = (function() {
-    const STARTING_WORDS = 10;
+    //redefining file vars for explicitness/readability
+    wordManager = window.wordManager; //wordManager.js
+    gameWordFactory = window.gameWordFactory; //gameWordFactory.js
+
+    const STARTING_NUM_WORDS = 10;
     const SPAWN_INTERVAL = 500;
-    const SPAWNER_NAME = "spawn";
-
-    // var wordManager = wordManager; //wordManager.js
-    // var wordFactory = gameWordFactory; //gameWordFactory.js
-    var wordList = ["form","slave","cannon","fireman","carpenter","voyage","needle","card","act","wind","music","crack","transport","plough","mountain","band","peace","wire","animal","secretary","queen","clocks","liquid","flesh","rake","lumber","jellyfish","houses","snails","afternoon","jewel","stage","club","grip","vessel","sofa","attack","insurance","cloth","bean","lizards","dog","birth","quiver","box","kettle","wing","bean","bell","farm"];
-    var gameBody = {}; //holds the dom elements
-    var nav = {};
-
-    var numWordsSpawned = 0;
+    const SHORT_DELAY = 700;
+    const LONG_DELAY = 2000;
+    const WORD_LIST = ["form","slave","cannon","fireman","carpenter","voyage","needle","card","act","wind","music","crack","transport","plough","mountain","band","peace","wire","animal","secretary","queen","clocks","liquid","flesh","rake","lumber","jellyfish","houses","snails","afternoon","jewel","stage","club","grip","vessel","sofa","attack","insurance","cloth","bean","lizards","dog","birth","quiver","box","kettle","wing","bean","bell","farm"];
+    
+    /* Local Variables */
     var spawnerID = null;
+    var numWordsSpawned = 0;
+    var wordsToSpawn = 0;
+    var wordsDeletedInRound = 0;
+    var currentRound = 0;
 
-    function loadNormalGame() {
-        initializeGame();
-        let wordsToSpawn = STARTING_WORDS;
-        startRound(wordsToSpawn);
-    }
-    function loadEndlessGame() {
-        initializeGame();
-        let wordsToSpawn = Number.MAX_SAFE_INTEGER;
-        console.log(wordsToSpawn);
-        startRound(wordsToSpawn);
+    // var isListening = false;
 
-    }
-    function loadStroopGame() {
-        initializeGame();
+    /* Dom Element References */
+    var gameBodyEl = {}; 
+    var navEl = {};
+    var roundSummaryEl = {};
+    var roundMsgEl = {};
+    var gameOverMsgEl = {};
 
-    }
-    function loadStatsScreen() {
-        initializeGame();
-    }
-
-    
-
-    function startRound(numWordsToSpawn) {
-        numWordsSpawned = 0;
-        startSpawner(numWordsToSpawn);
-
-    }
-
-    function endRound() {
-        stopSpawner();
-        numWordsSpawned = 0;
-    }
-
-    
-
-    function endGame() {
-        nav.style.display = "block";
-    }
-
-    function clearScreen() {
-        nav.style.display = "none";
+    function startGame(gameType) {
+        switch(gameType) {
+            case NORMAL_GAME:
+                init();
+                // wordsToSpawn = STARTING_NUM_WORDS;
+                wordsToSpawn = 1;
+                roundHelper.startRound();
+                break;
+            case ENDLESS_GAME:
+                init();
+                wordsToSpawn = Number.MAX_SAFE_INTEGER-1;
+                roundHelper.startRound();
+                break;
+            case STROOP_GAME:
+                // init();
+                // let wordsToSpawn = STARTING_WORDS;
+                // startRound();
+                break;
+            case STATS_SCREEN:
+                init();
+                break;
+            default:
+                break;
+        }  
     }
 
-    /* gameWord spawner */
-    function startSpawner(numWordsToSpawn) {
-        spawnerID = setInterval(() => {
-            let randIdx = Math.floor(Math.random() * wordList.length);
-            let gameWord = gameWordFactory.makeWord(wordList[randIdx]);
-            wordManager.addWord(gameWord);
-            gameBody.prepend(gameWord.domElementRef); 
-            if(++numWordsSpawned === numWordsToSpawn) stopSpawner();
-        }, SPAWN_INTERVAL);
-    }
-
-    function stopSpawner() {
-        clearInterval(spawnerID);
-        spawnerID = null;
-    }
-
-    /* Setup functions */
-    function initializeGame() {
+    /* GameWord Spawning Functions */
+    var spawner = {
+        startSpawner: function(numWordsToSpawn) {
+            spawnerID = setInterval(() => {
+                let randIdx = Math.floor(Math.random() * WORD_LIST.length);
+                let gameWord = gameWordFactory.makeWord(WORD_LIST[randIdx]);
+                wordManager.addWord(gameWord);
+                gameBodyEl.prepend(gameWord.domElementRef); 
+                if(++numWordsSpawned === numWordsToSpawn) this.stopSpawner();
+            }, SPAWN_INTERVAL);
+        },
+        stopSpawner: function() {
+            clearInterval(spawnerID);
+            spawnerID = null;      
+        }
+    };
+    /* Display Functions */
+    var screenHelper = {
+        flashVisibility: function(element, persistLength, additionalCb) {
+            setTimeout(() => {
+                this.toggleVisibility(element);
+                setTimeout(() => {
+                    this.toggleVisibility(element);
+                    if(additionalCb) additionalCb();
+                }, persistLength);
+            }, SHORT_DELAY);
+        },
+        displayRoundTitle: function() {
+            wordManager.clearAll();
+            this.flashVisibility(roundSummaryEl, LONG_DELAY, () => {
+                this.flashVisibility(roundMsgEl, SHORT_DELAY, () => {
+                    roundHelper.startRound();
+                });
+            });
+        },
+        toggleVisibility: function(element) {
+            element.classList.toggle("hidden");
+        },
+        clearScreen: function() {
+            this.toggleVisibility(navEl);
+        }
+    };
+    function init() {
+        /* Setup Functions */
         registerEventListeners();
         initDomRefs();
-        clearScreen();
+        screenHelper.clearScreen();
+        function initDomRefs() {
+            gameBodyEl = document.querySelector("main");
+            navEl = document.querySelector("nav");
+            roundSummaryEl = document.querySelector("#roundSummary");
+            roundMsgEl = document.querySelector("#roundMsg");
+            gameOverMsgEl = document.querySelector("#gameOverMsg");
+        }
+        /* Event Listeners */
+        function registerEventListeners() {
+            document.addEventListener("worddeleted", function(evt) {
+                wordsDeletedInRound++;
+                if(wordsDeletedInRound === wordsToSpawn) {
+                    roundHelper.endRound();
+                }
+            });
+            document.addEventListener("gameover", function(evt) {
+                wordManager.stopAnimations();
+                roundHelper.endGame();
+                console.log("Your base is destroyed! Game over");
+            });
+            document.addEventListener("safeKeyPress", function(evt) {
+                wordManager.handleInput(evt.key);
+            });
+        }
     }
-
-    function registerEventListeners() {
-        document.addEventListener("gameover", function(evt) {
-            wordManager.stopAnimations();
-            endRound();
-            console.log("Your base is destroyed! Game over");
-        });
-
-        document.addEventListener("safeKeyPress", function(evt) {
-            wordManager.handleInput(evt.key)
-        });
-    }
-    
-    function initDomRefs() {
-        gameBody = document.querySelector("main");
-        nav = document.querySelector("nav");
-    }
-     
+    /* Game/round State Management Functions */
+    var roundHelper = {
+        startRound: function() {
+            numWordsSpawned = 0;
+            wordsDeletedInRound = 0;
+            currentRound++;
+            // displayRoundTitle();
+            spawner.startSpawner(wordsToSpawn);
+        },
+        endRound: function() {
+            // stopSpawner();
+            wordManager.clearAll();
+            wordsToSpawn++;
+            screenHelper.displayRoundTitle();
+        },
+        endGame: function() {
+            numWordsSpawned = 0;
+            wordsToSpawn = 0;
+            // wordsDeletedInRound = 0;
+            currentRound = 0;
+            wordManager.clearAll();
+            screenHelper.flashVisibility(gameOverMsgEl, LONG_DELAY, () => {
+                screenHelper.flashVisibility(roundSummaryEl, LONG_DELAY);
+            });
+        }   
+    };
+ 
     return {
-        loadNormalGame, loadNormalGame,
-        loadEndlessGame, loadEndlessGame,
-        loadStroopGame, loadStroopGame,
-        loadStatsScreen, loadStatsScreen
+        load: startGame
     };
 })();

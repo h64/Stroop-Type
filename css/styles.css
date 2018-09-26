@@ -11,9 +11,13 @@ main {
     overflow: hidden;
     position: relative;
 }
+.hidden {
+    display: none;
+}
 h3 span {
     text-decoration: underline;
 }
+
 .gameWord {
     position: absolute;
     top: 0px;

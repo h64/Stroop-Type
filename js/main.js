@@ -1,14 +1,25 @@
 "use strict"
+/* Constants */
+var NORMAL_GAME = "normal";
+var ENDLESS_GAME = "endless";
+var STROOP_GAME = "stroop";
+var STATS_SCREEN = "stats";
 
 var game = (function() {
+    /* Explicit file redefinitions */
+    gameCoordinator = window.gameCoordinator; //gameCoordinator.js
+    inputHandler = window.inputHandler; //inputHandler.js
+
+    
+
+    /* Local Variables */
+    var isListening = false;
+
     /* DOM and File references */
     var normalGameStartBtn = {};
     var stroopGameStartBtn = {};
     var endlessGameStartBtn = {};
     var myStatsBtn = {};
-
-    // var gameCoordinator = gameCoordinator; //gameCoordinator.js
-    // var inputHandler = inputHandler; //inputHandler.js
 
     /* Functions */
     function initDomRefs() {
@@ -32,24 +43,26 @@ var game = (function() {
     }
 
     function listenForShortcutKey() {
-        document.addEventListener("safeKeyPress", filterKeys);
-        function filterKeys(evt) {
+        document.addEventListener("safeKeyPress", startGameByShortcut);
+        isListening = true;
+        function startGameByShortcut(evt) {
+            if(!isListening) return;
             switch(evt.key) {
                 case "n": 
-                    document.removeEventListener("safeKeyPress", filterKeys);
-                    gameCoordinator.loadNormalGame();
+                    isListening = false;
+                    gameCoordinator.load(NORMAL_GAME);
                     break;
                 case "e": 
-                    document.removeEventListener("safeKeyPress", filterKeys);   
-                    gameCoordinator.loadEndlessGame();
+                    isListening = false;
+                    gameCoordinator.load(ENDLESS_GAME);
                     break;
                 case "s": 
-                    document.removeEventListener("safeKeyPress", filterKeys);
-                    gameCoordinator.loadStroopGame();
+                    isListening = false;
+                    gameCoordinator.load(STROOP_GAME);
                     break;
                 case "m": 
-                    document.removeEventListener("safeKeyPress", filterKeys);
-                    gameCoordinator.loadStatsScreen();
+                    isListening = false;
+                    gameCoordinator.load(STATS_SCREEN);
                     break;
                 default:
                     break;
