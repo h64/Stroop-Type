@@ -1,8 +1,5 @@
 "use strict"
-const GAME_WIDTH = 500;
-const GAME_HEIGHT = 700;
-const MOVE_AMT = 5;
-const MOVE_INTERVAL = 100;
+
 
 /*
 * A gameWord is an object that represents a word used in the typing game
@@ -11,6 +8,11 @@ const MOVE_INTERVAL = 100;
 * the gameWord from an input string.                        
 */
 var gameWordFactory = (function() {
+    const GAME_WIDTH = 500;
+    const GAME_HEIGHT = 700;
+    const MOVE_AMT = 5;
+    const MOVE_INTERVAL = 100;
+    
     function createDomElement(word) {
         let gameWordElement = document.createElement("div");
         gameWordElement.classList.add("gameWord");
