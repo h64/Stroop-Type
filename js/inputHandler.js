@@ -19,12 +19,27 @@ var inputHandler = (function() {
         }
     }
 
+    /* returns a lowercase a-z char, or null */
     function strictToLowerCase(key) {
         return (keyInputIsValid(key)) ? key.toLowerCase() : null; 
     }
 
+    /* Forwards kepress events only if they meet criteria */
+    function registerEventHandler() {
+        document.addEventListener("keypress", function(evt) {
+            if(strictToLowerCase(evt.key)) 
+                dispatchCustomKeyEvent(evt.key); 
+        });
+    }
+
+    function dispatchCustomKeyEvent(inputKey) {
+        let evt = new CustomEvent("safeKeyPress");
+        evt.key = inputKey;
+        document.dispatchEvent(evt);
+    }
+
     return {
-        strictToLowerCase: strictToLowerCase
+        registerListener: registerEventHandler,
     };
 })();
 

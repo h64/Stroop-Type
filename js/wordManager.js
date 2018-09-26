@@ -1,17 +1,14 @@
 "use strict"
-var inputHandler = inputHandler; //inputHandler.js
 
 var wordManager = (function() {
     var gameWords = []; //holds the gameWord objects    
     var currentWord = null;
 
     function handleKeyInput(key) {
-        let input = inputHandler.strictToLowerCase(key);
-        if(!input) return;
         if(!currentWord) currentWord = findFirstMatchingWord(key);
         typeNextLetter(key); 
     }
-
+    
     /*
     * 1. reject keypresses when there are no words out
     * 2. reject keypress if it doesn't match gameWord's next letter

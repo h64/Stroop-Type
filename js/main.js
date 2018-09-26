@@ -1,23 +1,21 @@
 "use strict"
 
 /* DOM and File references */
-var nav = {};
 var normalGameStartBtn = {};
 var stroopGameStartBtn = {};
+var endlessGameStartBtn = {};
 var myStatsBtn = {};
 
 var gameCoordinator = gameCoordinator; //gameCoordinator.js
+var inputHandler = inputHandler; //inputHandler.js
 
 /* Functions */
 function initDomRefs() {
-    nav = document.querySelector("nav");
+    // nav = document.querySelector("nav");
     normalGameStartBtn = document.querySelector("#normalGameBtn");
-    stroopGameStartBtn = document.querySelector("#stroopGameBtn");
+    stroopGameStartBtn = document.querySelector("#stroopGameBtn")
+    endlessGameStartBtn = document.querySelector("#endlessGameBtn");
     myStatsBtn = document.querySelector("#myStatsBtn");
-}
-
-function clearScreen() {
-    nav.style.display = "none";
 }
 
 /* Event Handlers */
@@ -27,15 +25,49 @@ document.addEventListener("DOMContentLoaded", function(evt) {
 });
 
 function registerEventListeners() {
+    inputHandler.registerListener(); 
+    listenForShortcutKey();
+    listenForClick();
+    
+}
+
+function listenForShortcutKey() {
+    let listener = document.addEventListener("safeKeyPress", function(evt) {
+        console.log(evt);
+        switch(evt.key) {
+            case "n": 
+                document.removeEventListener("safeKeyPress", listener);
+                gameCoordinator.loadNormalGame();
+                break;
+            case "e": 
+                document.removeEventListener("safeKeyPress", listener);   
+                gameCoordinator.loadEndlessGame();
+                break;
+            case "s": 
+                document.removeEventListener("safeKeyPress", listener);
+                gameCoordinator.loadStroopGame();
+                break;
+            case "m": 
+                document.removeEventListener("safeKeyPress", listener);
+                gameCoordinator.loadStatsScreen();
+                break;
+            default:
+                break;
+        }
+    });
+}
+
+function listenForClick() {
     normalGameStartBtn.addEventListener("click", function() {
-        clearScreen();
-        gameCoordinator.startGame();
+        gameCoordinator.loadNormalGame();
+    });
+    endlessGameStartBtn.addEventListener("click", function() {
+        gameCoordinator.loadEndlessGame();
     });
     stroopGameStartBtn.addEventListener("click", function() {
-        //load stroop game
-        clearScreen();
+        gameCoordinator.loadStroopGame();
     });
     myStatsBtn.addEventListener("click", function() {
-        //load my stats page
+        gameCoordinator.loadStatsScreen();
     });
 }
