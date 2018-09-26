@@ -72,16 +72,16 @@ var game = (function() {
 
     function listenForClick() {
         normalGameStartBtn.addEventListener("click", function() {
-            gameCoordinator.loadNormalGame();
+            gameCoordinator.load(NORMAL_GAME);
         });
         endlessGameStartBtn.addEventListener("click", function() {
-            gameCoordinator.loadEndlessGame();
+            gameCoordinator.load(ENDLESS_GAME);
         });
         stroopGameStartBtn.addEventListener("click", function() {
-            gameCoordinator.loadStroopGame();
+            gameCoordinator.load(STROOP_GAME);
         });
         myStatsBtn.addEventListener("click", function() {
-            gameCoordinator.loadStatsScreen();
+            gameCoordinator.load(STATS_SCREEN);
         });
     }
 

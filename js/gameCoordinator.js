@@ -18,6 +18,7 @@ var gameCoordinator = (function() {
     var wordsToSpawn = 0;
     var wordsDeletedInRound = 0;
     var currentRound = 0;
+    var gameMode = null;
 
     // var isListening = false;
 
@@ -29,6 +30,7 @@ var gameCoordinator = (function() {
     var gameOverMsgEl = {};
 
     function startGame(gameType) {
+        gameMode = gameType;
         switch(gameType) {
             case NORMAL_GAME:
                 init();
@@ -50,10 +52,40 @@ var gameCoordinator = (function() {
                 init();
                 break;
             default:
+                gameMode = null;
                 break;
         }  
     }
-
+    function init() {
+        /* Setup Functions */
+        registerEventListeners();
+        initDomRefs();
+        screenHelper.clearScreen();
+        function initDomRefs() {
+            gameBodyEl = document.querySelector("main");
+            navEl = document.querySelector("nav");
+            roundSummaryEl = document.querySelector("#roundSummary");
+            roundMsgEl = document.querySelector("#roundMsg");
+            gameOverMsgEl = document.querySelector("#gameOverMsg");
+        }
+        /* Event Listeners */
+        function registerEventListeners() {
+            document.addEventListener("worddeleted", function(evt) {
+                wordsDeletedInRound++;
+                if(wordsDeletedInRound === wordsToSpawn) {
+                    roundHelper.endRound();
+                }
+            });
+            document.addEventListener("gameover", function(evt) {
+                wordManager.stopAnimations();
+                roundHelper.endGame();
+                console.log("Your base is destroyed! Game over");
+            });
+            document.addEventListener("safeKeyPress", function(evt) {
+                wordManager.handleInput(evt.key);
+            });
+        }
+    }
     /* GameWord Spawning Functions */
     var spawner = {
         startSpawner: function(numWordsToSpawn) {
@@ -85,7 +117,7 @@ var gameCoordinator = (function() {
             wordManager.clearAll();
             this.flashVisibility(roundSummaryEl, LONG_DELAY, () => {
                 this.flashVisibility(roundMsgEl, SHORT_DELAY, () => {
-                    roundHelper.startRound();
+                    if(gameMode !== ENDLESS_GAME) roundHelper.startRound();
                 });
             });
         },
@@ -96,36 +128,7 @@ var gameCoordinator = (function() {
             this.toggleVisibility(navEl);
         }
     };
-    function init() {
-        /* Setup Functions */
-        registerEventListeners();
-        initDomRefs();
-        screenHelper.clearScreen();
-        function initDomRefs() {
-            gameBodyEl = document.querySelector("main");
-            navEl = document.querySelector("nav");
-            roundSummaryEl = document.querySelector("#roundSummary");
-            roundMsgEl = document.querySelector("#roundMsg");
-            gameOverMsgEl = document.querySelector("#gameOverMsg");
-        }
-        /* Event Listeners */
-        function registerEventListeners() {
-            document.addEventListener("worddeleted", function(evt) {
-                wordsDeletedInRound++;
-                if(wordsDeletedInRound === wordsToSpawn) {
-                    roundHelper.endRound();
-                }
-            });
-            document.addEventListener("gameover", function(evt) {
-                wordManager.stopAnimations();
-                roundHelper.endGame();
-                console.log("Your base is destroyed! Game over");
-            });
-            document.addEventListener("safeKeyPress", function(evt) {
-                wordManager.handleInput(evt.key);
-            });
-        }
-    }
+    
     /* Game/round State Management Functions */
     var roundHelper = {
         startRound: function() {
@@ -136,7 +139,6 @@ var gameCoordinator = (function() {
             spawner.startSpawner(wordsToSpawn);
         },
         endRound: function() {
-            // stopSpawner();
             wordManager.clearAll();
             wordsToSpawn++;
             screenHelper.displayRoundTitle();
@@ -147,6 +149,7 @@ var gameCoordinator = (function() {
             // wordsDeletedInRound = 0;
             currentRound = 0;
             wordManager.clearAll();
+            spawner.stopSpawner();
             screenHelper.flashVisibility(gameOverMsgEl, LONG_DELAY, () => {
                 screenHelper.flashVisibility(roundSummaryEl, LONG_DELAY);
             });
