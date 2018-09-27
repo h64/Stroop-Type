@@ -1,6 +1,4 @@
 "use strict"
-
-
 /*
 * A gameWord is an object that represents a word used in the typing game
 * including a string, a DOM element reference, and an animation.
@@ -56,8 +54,8 @@ var gameWordFactory = (function() {
         gameWord.removeSelfFromDom = function() {
             this.stopAnimation();
             gameWord.domElementRef.remove();
-            let evt = new CustomEvent("worddeleted");
-            document.dispatchEvent(evt);
+            // let evt = new CustomEvent("worddeleted");
+            // document.dispatchEvent(evt);
         };
         return gameWord; 
     }

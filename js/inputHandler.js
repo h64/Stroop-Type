@@ -26,10 +26,14 @@ var inputHandler = (function() {
 
     /* Forwards kepress events only if they meet criteria */
     function registerEventHandler() {
-        document.addEventListener("keypress", function(evt) {
-            if(strictToLowerCase(evt.key)) 
-                dispatchCustomKeyEvent(evt.key); 
-        });
+        document.addEventListener("keypress", kp_eh);
+    }
+    function kp_eh(evt) {
+        if(strictToLowerCase(evt.key)) 
+        dispatchCustomKeyEvent(evt.key); 
+    }
+    function unregisterEventHandler() {
+        document.removeEventListener("keypress", kp_eh);
     }
 
     function dispatchCustomKeyEvent(inputKey) {
@@ -39,7 +43,10 @@ var inputHandler = (function() {
     }
 
     return {
-        registerListener: registerEventHandler,
+        unregisterListener: unregisterEventHandler,
+        registerListener: registerEventHandler
+        
+
     };
 })();
 

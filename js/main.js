@@ -10,8 +10,6 @@ var game = (function() {
     gameCoordinator = window.gameCoordinator; //gameCoordinator.js
     inputHandler = window.inputHandler; //inputHandler.js
 
-    
-
     /* Local Variables */
     var isListening = false;
 
@@ -44,6 +42,8 @@ var game = (function() {
         inputHandler.registerListener(); 
         listenForShortcutKey();
         listenForClick();
+        // console.log("calling to register the listeners");
+        // gameCoordinator.registerListeners();
     }
 
     function listenForShortcutKey() {

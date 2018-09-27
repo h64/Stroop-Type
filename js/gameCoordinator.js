@@ -16,7 +16,7 @@ var gameCoordinator = (function() {
     var spawnerID = null;
     var numWordsSpawned = 0;
     var wordsToSpawn = 0;
-    var wordsDeletedInRound = 0;
+    // var wordsDeletedInRound = 0;
     var gameMode = null;
     var gameOver = false;
 
@@ -24,11 +24,12 @@ var gameCoordinator = (function() {
     var timeAccumulated = null;
     
     var stats = {
-        // currentRound = 0;
-        // accuracy: 
+        currentRound: 0,
+        accuracy: 0,
+        keyPresses: 0,
+        keyMatches: 0,
     };
 
-    // var isListening = false;
 
     /* Dom Element References */
     var gameBodyEl = {}; 
@@ -45,6 +46,7 @@ var gameCoordinator = (function() {
                 init();
                 // wordsToSpawn = STARTING_NUM_WORDS;
                 wordsToSpawn = 1;
+                console.log(stats);
                 roundHelper.startRound();
                 break;
             case ENDLESS_GAME:
@@ -67,11 +69,14 @@ var gameCoordinator = (function() {
     }
     function init() {
         /* Setup Functions */
-        listeners.registerEventListeners();
+        inputHandler.unregisterListeners();
+        inputHandler.registerListeners();
         initDomRefs();
         initVariables();
         screenHelper.clearScreen();
-        wordManager.initKeyCounter();
+        wordManager.init();
+        unregisterEventListeners();
+        registerEventListeners();
 
         function initDomRefs() {
             gameBodyEl = document.querySelector("main");
@@ -84,46 +89,47 @@ var gameCoordinator = (function() {
             spawnerID = null;
             numWordsSpawned = 0;
             wordsToSpawn = 0;
-            wordsDeletedInRound = 0;
+            // wordsDeletedInRound = 0;
             gameMode = null;
             gameOver = false;
             timeStart = null;
             timeAccumulated = null;
             stats = {
-                // currentRound = 0;
-                // accuracy: 
+                currentRound: 0,
+                accuracy: 0,
+                keyPresses: 0,
+                keyMatches: 0,
             };      
         }
-        
-    }
-    var listeners = {
-        /* Event Listeners */
-        registerEventListeners: function() {
-            document.addEventListener("worddeleted", this.wordeletedEvt);
-            document.addEventListener("gameover", this.gameoverEvt);
-            document.addEventListener("safeKeyPress", function(evt) {
-                wordManager.handleInput(evt.key);
-            });
-        },
-        removeEventListeners: function() {
-            document.removeEventListener("worddeleted", this.wordeletedEvt);
-            document.removeEventListener("gameover", this.gameoverEvt);
-        },
-    
-        wordeletedEvt: function() {
-            wordsDeletedInRound++;
-            if(wordsDeletedInRound === wordsToSpawn && !gameOver) {
-                roundHelper.endRound();
-            }
-        },
-        gameoverEvt: function() {
+        function wordlistemptyEvt() {
+            console.log("wl empty");
+            
+            roundHelper.endRound();
+        }
+        function gameoverEvt() {
             if(!gameOver) { //prevents multiple gameover evts from being listened to
+                console.log("evt gameover");
                 wordManager.stopAnimations();
                 gameOver = true;
                 roundHelper.endRound();
             }
         }
+        function keypressEvt(evt) {
+            wordManager.handleInput(evt.key);
+        }
+        function registerEventListeners() {
+            console.log("registering evt listeners");
+            document.addEventListener("wordlistempty", wordlistemptyEvt);
+            document.addEventListener("gameover", gameoverEvt);
+            document.addEventListener("safeKeyPress", keypressEvt);
+        }
+        function unregisterEventListeners() {
+            document.addEventListener("wordlistempty", wordlistemptyEvt);
+            document.removeEventListener("gameover", gameoverEvt);
+            document.removeEventListener("safeKeyPress", keypressEvt);
+        }
     }
+
 
     /* GameWord Spawning Functions */
     var spawner = {
@@ -146,11 +152,11 @@ var gameCoordinator = (function() {
     var roundHelper = {
         startRound: function() {
             numWordsSpawned = 0;
-            wordsDeletedInRound = 0;
-            stats.currentRound++;
+            // wordsDeletedInRound = 0;
             spawner.startSpawner(wordsToSpawn);
         },
         endRound: function() {
+            stats.currentRound++;
             spawner.stopSpawner();
             wordManager.clearAll();
             wordsToSpawn++;
@@ -170,9 +176,8 @@ var gameCoordinator = (function() {
         endGame: function() {
             // console.log("WE ARE IN THE ENDGAME FUNCTION...");
             gameOver = true;
-            wordManager.clearAll();
             spawner.stopSpawner();
-            listeners.removeEventListeners();
+            // listeners.removeEventListeners();
             gameMode = null;
             // updateStats();
             screenHelper.toggleVisibility(navEl);
@@ -204,10 +209,26 @@ var gameCoordinator = (function() {
     };
 
     function updateStats() {
-
+        stats.keyPresses = Number(wordManager.getKeyPresses());
+        stats.keyMatches = Number(wordManager.getKeyMatches());
+        console.log(stats);
+        updateRoundSummaryEl();
     }
  
+    function updateRoundSummaryEl() {
+        let spanList = [];
+        for(let i = 0; i < roundSummaryEl.children.length; i++) {
+            spanList.push(roundSummaryEl.children[i].children[0]);
+        }
+        spanList[0].textContent = stats.currentRound; //current round
+        spanList[1].textContent = 0; //overall wpm
+        spanList[2].textContent = 0; //round wpm
+        spanList[3].textContent = Number(stats.keyPresses-stats.keyMatches); //missed keys this round
+        spanList[4].textContent = parseFloat(stats.keyMatches/stats.keyPresses); //total error %
+
+    }
     return {
-        load: startGame
+        load: startGame,
+        endRound: roundHelper.endRound
     };
 })();

@@ -7,7 +7,7 @@ var wordManager = (function() {
         totalKeyPresses: 0,
         totalKeyMatches: 0,
     };
-    function initKeyCounter() {
+    function init() {
         keyStats.totalKeyPresses = 0;
         keyStats.totalKeyMatches = 0;
     };
@@ -31,16 +31,20 @@ var wordManager = (function() {
     */
     function typeNextLetter(key) {
         //reject keypresses when there are no words out
-        if(!currentWord) return;
 
         //add keypress to statistics
         keyStats.totalKeyPresses++;
+        if(!currentWord) return;
 
         //reject keypress if it doesn't match gameWord's next letter
         let nextChar = currentWord.word[currentWord.nextCharIdx];
-        if(key !== nextChar) {
+        // console.log(key !== nextChar);
+        if(key == nextChar) {
             keyStats.totalKeyMatches++;
+            // console.log(keyStats);
             //add to miss count and statistics
+        }
+        if(key !== nextChar) {
             return;
         }
 
@@ -64,7 +68,6 @@ var wordManager = (function() {
         gameWords.splice(idx, 1);
         //remove word from dom
         //give the exploded word some style
-        // let wordToDelete = currentWord;
         let domRef = word.domElementRef;
         domRef.textContent = "BOOM";
         domRef.style.color = "yellow";
@@ -100,22 +103,27 @@ var wordManager = (function() {
 
     function deleteWord(word) {
         word.removeSelfFromDom();
+        if(gameWords.length === 0) gameCoordinator.endRound();
     }
 
     function clearAll() {
         stopAnimations();
         let main = document.querySelector("main");
         gameWords.forEach(function(gameWord) {
-            deleteWord(gameWord);
+            gameWord.removeSelfFromDom();
         });
+        // throwWordListEmpty();
         gameWords.length = 0;
         currentWord = null;
-        // keyStats.totalKeyMatches = 0;
-        // keyStats.totalKeyPresses = 0;
+        // initKeyCounter();
+    }
+    function throwWordListEmpty() {
+        let evt = new CustomEvent("wordlistempty");
+        document.dispatchEvent(evt);
     }
 
     return {
-        initKeyCounter, initKeyCounter,
+        init, init,
         getKeyPresses, getKeyPresses,
         getKeyMatches, getKeyMatches, 
         addWord: addWord, 
