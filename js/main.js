@@ -36,6 +36,10 @@ var game = (function() {
         registerEventListeners();
     });
 
+    function enableListening() {
+        isListening = true;
+    }
+
     function registerEventListeners() {
         inputHandler.registerListener(); 
         listenForShortcutKey();
@@ -72,18 +76,24 @@ var game = (function() {
 
     function listenForClick() {
         normalGameStartBtn.addEventListener("click", function() {
+            isListening = false;
             gameCoordinator.load(NORMAL_GAME);
         });
         endlessGameStartBtn.addEventListener("click", function() {
+            isListening = false;
             gameCoordinator.load(ENDLESS_GAME);
         });
         stroopGameStartBtn.addEventListener("click", function() {
+            isListening = false;
             gameCoordinator.load(STROOP_GAME);
         });
         myStatsBtn.addEventListener("click", function() {
+            isListening = false;
             gameCoordinator.load(STATS_SCREEN);
         });
     }
-
+    return {
+        mainMenu: enableListening
+    }
 
 })();

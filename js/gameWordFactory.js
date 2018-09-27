@@ -10,7 +10,7 @@
 var gameWordFactory = (function() {
     const GAME_WIDTH = 500;
     const GAME_HEIGHT = 700;
-    const MOVE_AMT = 5;
+    const MOVE_AMT = 20;
     const MOVE_INTERVAL = 100;
 
     function createDomElement(word) {
@@ -32,7 +32,6 @@ var gameWordFactory = (function() {
 
         style.left = randXPos + "px";
         style.top = "0px";
-
         let animation = setInterval(function() {
             if(parseInt(style.top) > maxYPos) {
                 let gameOver = new Event("gameover");
@@ -56,7 +55,7 @@ var gameWordFactory = (function() {
         };
         gameWord.removeSelfFromDom = function() {
             this.stopAnimation();
-            gameWord.domElementRef.parentNode.removeChild(gameWord.domElementRef);
+            gameWord.domElementRef.remove();
             let evt = new CustomEvent("worddeleted");
             document.dispatchEvent(evt);
         };
