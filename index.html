@@ -9,13 +9,15 @@
 </head>
 <body>
     <main>
-        <nav>
+        <header>
             <h1>Stroop Type</h1>
             <h2>by Henry Hong</h2>
-            <h3 id="normalGameBtn"><span>N</span>ormal Game Start</h3>
-            <h3 id="endlessGameBtn"><span>E</span>ndless Mode</h3>
-            <h3 id="stroopGameBtn"><span>S</span>troop Game Start</h3>
-            <h3 id="myStatsBtn"><span>M</span>y Stats</h3>
+        </header>
+        <nav>
+            <h3 id="n"><span>N</span>ormal Game Start</h3>
+            <h3 id="e"><span>E</span>ndless Mode</h3>
+            <h3 id="s"><span>S</span>troop Game Start</h3>
+            <h3 id="m"><span>M</span>y Stats</h3>
         </nav>
         <div class="hidden" id="roundSummary">
             <h1>Round: <span></span></h1>
@@ -32,14 +34,10 @@
         </div>
     </main>
 
-    <script
-        src="https://code.jquery.com/jquery-3.3.1.min.js"
-        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
-    <script src="./js/inputHandler.js"></script>
+    <script src="./js/inputSanitizer.js"></script>
     <script src="./js/gameWordFactory.js"></script>
     <script src="./js/wordManager.js"></script>
-    <script src="./js/gameInstance.js>"></script>
+    <script src="./js/gameInstance.js"></script>
     <script src="./js/gameCoordinator.js"></script>
     <script src="./js/main.js"></script>
 </body>

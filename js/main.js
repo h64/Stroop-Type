@@ -1,99 +1,53 @@
 "use strict"
-/* Constants */
-var NORMAL_GAME = "normal";
-var ENDLESS_GAME = "endless";
-var STROOP_GAME = "stroop";
-var STATS_SCREEN = "stats";
 
 var game = (function() {
     /* Explicit file redefinitions */
     gameCoordinator = window.gameCoordinator; //gameCoordinator.js
-    inputHandler = window.inputHandler; //inputHandler.js
+    inputSanitizer = window.inputSanitizer; //inputHandler.js
 
     /* Local Variables */
-    var isListening = false;
+    var isListening = true;
 
     /* DOM and File references */
-    var normalGameStartBtn = {};
-    var stroopGameStartBtn = {};
-    var endlessGameStartBtn = {};
-    var myStatsBtn = {};
+    var header = null;
+    var nav = null;
+    
 
     /* Functions */
-    function initDomRefs() {
-        // nav = document.querySelector("nav");
-        normalGameStartBtn = document.querySelector("#normalGameBtn");
-        stroopGameStartBtn = document.querySelector("#stroopGameBtn")
-        endlessGameStartBtn = document.querySelector("#endlessGameBtn");
-        myStatsBtn = document.querySelector("#myStatsBtn");
+    function toggleListening() {
+        isListening = !isListening;
     }
-
+    function toggleMenuVisibility() {
+        nav.style.display = nav.style.display === "none" ? "block" : "none";
+        header.style.display = header.style.display === "none" ? "block" : "none";
+    }
+    
     /* Event Handlers */
     document.addEventListener("DOMContentLoaded", function(evt) {
-        initDomRefs();
+        header = document.querySelector("header");
+        nav = document.querySelector("nav");
         registerEventListeners();
     });
 
-    function enableListening() {
-        isListening = true;
-    }
-
     function registerEventListeners() {
-        inputHandler.registerListener(); 
-        listenForShortcutKey();
-        listenForClick();
-        // console.log("calling to register the listeners");
-        // gameCoordinator.registerListeners();
-    }
-
-    function listenForShortcutKey() {
-        document.addEventListener("safeKeyPress", startGameByShortcut);
-        isListening = true;
-        function startGameByShortcut(evt) {
+        nav.addEventListener("click", (evt) => {
+            if(!isListening || evt.target === nav) return;
+            toggleListening();
+            toggleMenuVisibility();
+            let gameType = evt.target.id;
+            gameCoordinator.start(gameType);
+        });
+        document.addEventListener("keypress", (evt) => {
             if(!isListening) return;
-            switch(evt.key) {
-                case "n": 
-                    isListening = false;
-                    gameCoordinator.load(NORMAL_GAME);
-                    break;
-                case "e": 
-                    isListening = false;
-                    gameCoordinator.load(ENDLESS_GAME);
-                    break;
-                case "s": 
-                    isListening = false;
-                    gameCoordinator.load(STROOP_GAME);
-                    break;
-                case "m": 
-                    isListening = false;
-                    gameCoordinator.load(STATS_SCREEN);
-                    break;
-                default:
-                    break;
+            let key = inputSanitizer.strictToLowerCase(evt.key);
+            if(key !== null) {
+                if(key == "n" || key == "e" || key == "s" || key == "m") {
+                    toggleListening(); 
+                    toggleMenuVisibility();
+                    let gameType = key;
+                    gameCoordinator.start(gameType);
+                }
             }
-        } 
-    }
-
-    function listenForClick() {
-        normalGameStartBtn.addEventListener("click", function() {
-            isListening = false;
-            gameCoordinator.load(NORMAL_GAME);
-        });
-        endlessGameStartBtn.addEventListener("click", function() {
-            isListening = false;
-            gameCoordinator.load(ENDLESS_GAME);
-        });
-        stroopGameStartBtn.addEventListener("click", function() {
-            isListening = false;
-            gameCoordinator.load(STROOP_GAME);
-        });
-        myStatsBtn.addEventListener("click", function() {
-            isListening = false;
-            gameCoordinator.load(STATS_SCREEN);
         });
     }
-    return {
-        mainMenu: enableListening
-    }
-
 })();
