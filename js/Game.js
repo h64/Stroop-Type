@@ -39,6 +39,7 @@ class Game {
     listenForGameover() {
         document.addEventListener("gameover", () => {
             this.wordManager.explodeAll();
+            console.log("game over");
         });
     }
 

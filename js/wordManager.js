@@ -8,10 +8,13 @@ class WordManager {
     keyPressProcessed(key) {
         if(!this.currentWord) {
             //if matchingWordFound() -> null, return false
-            return this.currentWord = (this.matchingWordFound(key)) ? true : false;
-        } else { 
-            return this.typeNextLetter(key);
+            let wordCandidate = this.matchingWordFound(key);
+            if(wordCandidate) {
+                this.currentWord = wordCandidate;
+            } 
+            else return false;
         }
+        return this.typeNextLetter(key);
     }
     /* If word candidate found, return it. Otherwise return null */
     matchingWordFound(key) {
@@ -22,9 +25,8 @@ class WordManager {
     }
     /* Returns true if key press matches the next letter. Otherwise returns false */
     typeNextLetter(keyPress) {
-        let nextChar = this.currentWord.word[this.currentWord.nextCharIdx];       
+        let nextChar = this.currentWord.word[this.currentWord.nextCharIdx];      
         if(keyPress !== nextChar) return false;
-
         //If keypress valid, color 
         this.currentWord.colorNextLetter();
 
@@ -33,7 +35,7 @@ class WordManager {
 
         //explode the gameWord if the word is finished
         if(this.currentWord.nextCharIdx === this.currentWord.word.length) 
-            explodeWord(this.currentWord);  
+            this.explodeWord(this.currentWord);  
     }
     /* Remove the word, and play a fun animation */
     explodeWord(word) {
