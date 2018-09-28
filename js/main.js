@@ -1,12 +1,12 @@
 "use strict"
 
-var game = (function() {
+var main = (function() {
     /* Explicit file redefinitions */
     gameCoordinator = window.gameCoordinator; //gameCoordinator.js
     inputSanitizer = window.inputSanitizer; //inputHandler.js
 
     /* Local Variables */
-    var isListening = true;
+    var menuIsListening = true;
 
     /* DOM and File references */
     var header = null;
@@ -14,12 +14,16 @@ var game = (function() {
     
 
     /* Functions */
-    function toggleListening() {
-        isListening = !isListening;
-    }
     function toggleMenuVisibility() {
         nav.style.display = nav.style.display === "none" ? "block" : "none";
         header.style.display = header.style.display === "none" ? "block" : "none";
+        toggleListening();
+    }
+    function toggleListening() {
+        menuIsListening = !menuIsListening;
+    }
+    function pipeKeyPressToCoordinator(key) {
+        gameCoordinator.handleKeyPress(key);
     }
     
     /* Event Handlers */
@@ -31,23 +35,27 @@ var game = (function() {
 
     function registerEventListeners() {
         nav.addEventListener("click", (evt) => {
-            if(!isListening || evt.target === nav) return;
-            toggleListening();
+            if(!menuIsListening || evt.target === nav) return;
             toggleMenuVisibility();
             let gameType = evt.target.id;
-            gameCoordinator.start(gameType);
+            gameCoordinator.startGame(gameType);
         });
         document.addEventListener("keypress", (evt) => {
-            if(!isListening) return;
             let key = inputSanitizer.strictToLowerCase(evt.key);
-            if(key !== null) {
+            if(key === null) return;
+            if(menuIsListening) {
                 if(key == "n" || key == "e" || key == "s" || key == "m") {
-                    toggleListening(); 
                     toggleMenuVisibility();
                     let gameType = key;
-                    gameCoordinator.start(gameType);
+                    gameCoordinator.startGame(gameType);
                 }
+            } else {
+                pipeKeyPressToCoordinator(key);
             }
         });
     }
+    return {
+        showMenu: toggleMenuVisibility
+    }
+
 })();

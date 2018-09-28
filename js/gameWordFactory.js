@@ -10,6 +10,7 @@ var gameWordFactory = (function() {
     const GAME_HEIGHT = 700;
     const MOVE_AMT = 20;
     const MOVE_INTERVAL = 100;
+    const REMOVE_DELAY = 500;
 
     function createDomElement(word) {
         let gameWordElement = document.createElement("div");
@@ -30,14 +31,15 @@ var gameWordFactory = (function() {
 
         style.left = randXPos + "px";
         style.top = "0px";
+
         let animation = setInterval(function() {
             if(parseInt(style.top) > maxYPos) {
                 let gameOver = new Event("gameover");
                 document.dispatchEvent(gameOver);
             }
-            //else, increment the position
             style.top = parseInt(style.top) + MOVE_AMT + "px";
         }, MOVE_INTERVAL);
+
         return animation;
     }
 
@@ -48,18 +50,21 @@ var gameWordFactory = (function() {
             domElementRef: createDomElement(aWord),
         }
         gameWord.animation = setAnimation(gameWord.domElementRef);
-        gameWord.stopAnimation = function() {
+        gameWord.explodeSelf = function() {
             clearInterval(this.animation);
-        };
-        gameWord.removeSelfFromDom = function() {
-            this.stopAnimation();
-            gameWord.domElementRef.remove();
-            // let evt = new CustomEvent("worddeleted");
-            // document.dispatchEvent(evt);
-        };
+            this.domElementRef.textContent = "BOOM";
+            this.domElementRef.style.color = "yellow";
+            setTimeout(function() {
+                gameWord.domElementRef.remove();
+            }, REMOVE_DELAY);
+        }
         return gameWord; 
     }
-
+    // gameWord.stopAnimation = function() {
+    // };
+    // gameWord.removeSelfFromDom = function() {
+    //     this.stopAnimation();
+    // };
     return {
         makeWord: makeGameWord, 
     };
