@@ -1,4 +1,4 @@
-const SHORT_DELAY = 830;
+const SHORT_DELAY = 800;
 const LONG_DELAY = 2000;
 
 var screenHelper = (function() {

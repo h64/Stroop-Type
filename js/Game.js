@@ -24,7 +24,6 @@ class Game {
 
         this.gameOver = false;
         this.roundStarted = false;
-        this.startTime = new Date();
 
         this.startRound();
     }
@@ -68,7 +67,7 @@ class Game {
     calculateStats() {
         let endTime = new Date();
         this.stats.roundTimeElapsed = endTime - this.stats.roundStartTime;
-        this.stats.overallTimeElapsed = endTime - this.startTime;
+        this.stats.overallTimeElapsed += this.stats.roundTimeElapsed;
         this.stats.roundWpm = parseFloat(this.stats.wordsCompleted / this.stats.roundTimeElapsed * 1000 * 60).toFixed(2);
         this.stats.overallWpm = parseFloat(this.stats.totalWordsCompleted / this.stats.overallTimeElapsed * 1000 * 60).toFixed(2);
         this.stats.wordsCompleted = 0;

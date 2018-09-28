@@ -35,7 +35,7 @@ class GameWord {
     }
 
     setAnimation(domRef) {
-        let randXPos = Math.floor(Math.random() * (GAME_WIDTH-100));
+        let randXPos = Math.floor(Math.random() * (GAME_WIDTH-150));
         let maxYPos = GAME_HEIGHT - 25;
         let style = domRef.style;
 
