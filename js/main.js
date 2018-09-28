@@ -1,10 +1,5 @@
 "use strict"
-
 var main = (function() {
-    /* Explicit file redefinitions */
-    // gameCoordinator = window.gameCoordinator; //gameCoordinator.js
-    // inputSanitizer = window.inputSanitizer; //inputHandler.js
-
     /* Local Variables */
     var menuIsListening = true;
 
@@ -12,7 +7,6 @@ var main = (function() {
     var header = null;
     var nav = null;
     
-
     /* Functions */
     function toggleMenuVisibility() {
         nav.style.display = nav.style.display === "none" ? "block" : "none";
@@ -56,6 +50,9 @@ var main = (function() {
         });
         document.addEventListener("gameover", () => {
             gameCoordinator.endGame();
+        });
+        document.addEventListener("wordcomplete", () => {
+            gameCoordinator.addToCompletionStat();
         });
     }
     return {

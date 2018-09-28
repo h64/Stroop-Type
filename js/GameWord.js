@@ -3,7 +3,7 @@
 const REMOVE_DELAY = 800;
 const GAME_WIDTH = 500;
 const GAME_HEIGHT = 700;
-const MOVE_AMT = 20;
+const MOVE_AMT = 10;
 const MOVE_INTERVAL = 100;
 
 class GameWord {
@@ -35,7 +35,7 @@ class GameWord {
     }
 
     setAnimation(domRef) {
-        let randXPos = Math.floor(Math.random() * (GAME_WIDTH-60));
+        let randXPos = Math.floor(Math.random() * (GAME_WIDTH-100));
         let maxYPos = GAME_HEIGHT - 25;
         let style = domRef.style;
 

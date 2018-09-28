@@ -1,19 +1,39 @@
 html, body {
     margin: 0px;
     padding: 0px;
+    width: 100%;
+    background-image: url("../img/sun-pattern.png");
+    background-attachment: fixed;
 }
+
 main {
     width: 500px;
     height: 700px;
-    margin: 20px auto;
+    margin: 50px auto;
     text-align: center;
-    background-color: lightgray;
+    background-color: lightskyblue;
     overflow: hidden;
     position: relative;
+    font-family: 'Courier New', Courier, monospace;
+
 }
-.hidden {
-    display: none;
+
+div {
+    font-size: 22px;
 }
+
+header {
+    padding-top: 1em;
+}
+
+nav {
+    margin-top: 50%;
+    font-size: 1.5em;
+}
+h1 {
+    font-size: 3em;
+}
+
 h3 span {
     text-decoration: underline;
 }
@@ -24,14 +44,10 @@ h3 span {
     left: 0px;
 }
 
-h1 {
-    
+.hidden {
+    display: none;
 }
 
-h2 {
-
-}
-
-h3 {
-    
+#roundSummary {
+    margin-top: 40%
 }

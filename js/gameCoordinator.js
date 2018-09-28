@@ -22,7 +22,8 @@ var gameCoordinator = (function() {
                 game = new StroopGame();
                 break;
             case STATS_SCREEN:
-                //load stats screen
+                // let summary = document.querySelector("#roundSummary");
+                // screenHelper.flashVisibility(summary);
                 break;
         }
     }
@@ -34,13 +35,17 @@ var gameCoordinator = (function() {
     function pipeKeyPressToGame(key) {
         if(game) game.processKeyPress(key);
     }
+    function addToCompletionStat() {
+        if(game) game.incrementWordCompletedCounter();
+    }
 
     //presistent stats tracking
 
     return {
         startGame: startGame,
         endGame: endGame,
-        handleKeyPress: pipeKeyPressToGame
+        handleKeyPress: pipeKeyPressToGame,
+        addToCompletionStat: addToCompletionStat
     }
 })();
   

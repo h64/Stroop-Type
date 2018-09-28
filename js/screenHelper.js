@@ -37,50 +37,34 @@ var screenHelper = (function() {
         flashVisibility(domReferences.gameOverMsgEl, LONG_DELAY, cb);
     }
 
+    function updateStats(stats) {
+        updateRoundSummaryEl(stats);
+    }
+
+    function updateRoundSummaryEl(stats) {
+        let spanList = [];
+        for(let i = 0; i < domReferences.roundSummaryEl.children.length; i++) {
+            spanList.push(domReferences.roundSummaryEl.children[i].children[0]);
+        }
+        spanList[0].textContent = stats.currentRound; //current round
+        spanList[1].textContent = stats.overallWpm; //overall wpm
+        spanList[2].textContent = stats.roundWpm; //round wpm
+        spanList[3].textContent = stats.roundKeyPresses-stats.roundKeyMatches; //missed keys this round
+        let accuracy;
+        if(stats.totalKeyPresses == 0) {
+            accuracy = 0;
+        } else {
+            accuracy = parseFloat(stats.totalKeyMatches/stats.totalKeyPresses*100).toFixed(2);
+        }
+        spanList[4].textContent = accuracy; //total accuracy %
+    }
+
+
     return {
         init: initDomReferences,
+        updateStats: updateStats,
         flashRoundSummary: flashRoundSummary,
         flashRoundStartMsg: flashRoundStartMsg,
         flashGameOver: flashGameOver
     }
 })();
-
-// /* Display Functions */
-// var screenHelper = {
-//     flashVisibility: function(element, persistLength, additionalCb) {
-//         setTimeout(() => {
-//             this.toggleVisibility(element);
-//             setTimeout(() => {
-//                 this.toggleVisibility(element);
-//                 if(additionalCb) {
-//                     // console.log("AFTER THE TIMEOUTS...");
-//                     additionalCb();
-//                 }
-//             }, persistLength);
-//         }, SHORT_DELAY);
-//     },
-//     toggleVisibility: function(element) {
-//         element.classList.toggle("hidden");
-//     },
-//     clearScreen: function() {
-//         this.toggleVisibility(navEl);
-//     }
-// };
-
-// function updateStats() {
-//     stats.keyPresses = Number(wordManager.getKeyPresses());
-//     stats.keyMatches = Number(wordManager.getKeyMatches());
-//     console.log(stats);
-//     updateRoundSummaryEl();
-// }
-
-// function updateRoundSummaryEl() {
-//     let spanList = [];
-//     for(let i = 0; i < roundSummaryEl.children.length; i++) {
-//         spanList.push(roundSummaryEl.children[i].children[0]);
-//     }
-//     spanList[0].textContent = stats.currentRound; //current round
-//     spanList[1].textContent = 0; //overall wpm
-//     spanList[2].textContent = 0; //round wpm
-//     spanList[3].textContent = Number(stats.keyPresses-stats.keyMatches); //missed keys this round
-//     spanList[4].textContent = parseFloat(stats.keyMatches/stats.keyPresses); //total error %
