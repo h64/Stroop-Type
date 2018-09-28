@@ -25,4 +25,5 @@ class WordSpawner {
     isDoneSpawning() {
         return this.spawnerID === null ? true : false;
     }
+
 }

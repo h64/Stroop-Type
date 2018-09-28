@@ -22,8 +22,6 @@ var gameCoordinator = (function() {
                 game = new StroopGame();
                 break;
             case STATS_SCREEN:
-                // let summary = document.querySelector("#roundSummary");
-                // screenHelper.flashVisibility(summary);
                 break;
         }
     }
