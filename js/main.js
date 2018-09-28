@@ -54,6 +54,9 @@ var main = (function() {
                 pipeKeyPressToCoordinator(key);
             }
         });
+        document.addEventListener("gameover", () => {
+            gameCoordinator.endGame();
+        });
     }
     return {
         showMenu: toggleMenuVisibility

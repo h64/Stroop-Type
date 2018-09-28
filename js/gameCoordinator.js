@@ -7,15 +7,7 @@ const STROOP_GAME = "s";
 const STATS_SCREEN = "m";
 
 var gameCoordinator = (function() {
-    /* Explicit file redefinitions */
-    // wordManager = window.wordManager; //wordManager.js
-    // gameWordFactory = window.gameWordFactory; //gameWordFactory.js
-    
-    /* Local Variables */
     var game = null;
-
-    /* Dom Element References */
-
 
     /* Functions */
     function startGame(gameType) {
@@ -35,13 +27,12 @@ var gameCoordinator = (function() {
         }
     }
     function endGame() {
-        //game.die() remove self from existence
+        game.endGame();
         game = null;
-        main.showMenu();
     }
     
     function pipeKeyPressToGame(key) {
-        game.processKeyPress(key);
+        if(game) game.processKeyPress(key);
     }
 
     //presistent stats tracking

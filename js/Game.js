@@ -2,8 +2,9 @@
 const STARTING_NUM_WORDS = 5;
 
 class Game {
-    constructor() {
+    constructor(startingNumWordsOverride) {
         this.wordsToSpawn = STARTING_NUM_WORDS;
+        if(startingNumWordsOverride) this.wordsToSpawn = startingNumWordsOverride;
         this.stats = {
             currentRound: 0,
             accuracy: 0,
@@ -12,14 +13,19 @@ class Game {
         }
         this.wordSpawner = null;
         this.wordManager = new WordManager();
-        this.listenForGameover();
+
+        this.gameOver = false;
+        this.roundStarted = false;
+
         this.startRound();
     }
     startRound() {
         this.stats.currentRound++;
+        this.roundStarted = true;
         this.wordSpawner = new WordSpawner(this.wordManager, this.wordsToSpawn);
     }
     processKeyPress(key) {
+        if(!this.roundStarted) return; //reject keypresses between rounds
         if(this.wordManager.keyPressProcessed(key)) {
             this.stats.keyMatches++;
             this.stats.keyPresses++;
@@ -31,43 +37,46 @@ class Game {
         }
     }
     endRound() {
-        console.log("ending round");
+        this.roundStarted = false;
         screenHelper.flashRoundSummary(() => {
             screenHelper.flashRoundStartMsg(() => {
-                this.wordsToSpawn++;
-                this.startRound();
+                if(!this.gameOver) {
+                    this.wordsToSpawn++;
+                    this.startRound();
+                }
+                
             });
         });
     }
     getStats() {
         return this.stats;
     }
-    listenForGameover() {
-        document.addEventListener("gameover", this.endGame.bind(this));
-    }
+
     endGame() {
-        this.unregisterListener();
+        this.gameOver = true;
+        this.wordSpawner.stopSpawner();
         this.wordManager.explodeAll();
-        // setTimeout(() => {
-            screenHelper.flashRoundSummary(() => {
-                screenHelper.flashGameOver(() => {
-                    setTimeout(() => {
-                        gameCoordinator.endGame();
-                    }, 1000)
-                });
+        screenHelper.flashRoundSummary(() => {
+            screenHelper.flashGameOver(() => {
+                setTimeout(() => {
+                    main.showMenu();
+                }, 1000)
             });
-        // }, 500);          
-    }
-    unregisterListener() {
-        document.removeEventListener("gameover", this.endGame);
+        });         
     }
 
 }
 
 class EndlessGame extends Game {
     constructor() {
-        super();
-        this.wordsToSpawn = Number.MAX_SAFE_INTEGER - 1;
+        let numWords = Number.MAX_SAFE_INTEGER - 1;
+        super(numWords);
+    }
+    endRound() {
+        screenHelper.flashRoundSummary(() => {
+            screenHelper.flashRoundStartMsg(() => {
+            });
+        });
     }
 }
 
