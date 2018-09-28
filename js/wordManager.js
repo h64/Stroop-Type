@@ -5,49 +5,55 @@ class WordManager {
         this.currentWord = null;
     }
     /* Returns true if key press matches a char, false if not */
-    keyPressProcessed() {
-        if(!currentWord) {
+    keyPressProcessed(key) {
+        if(!this.currentWord) {
             //if matchingWordFound() -> null, return false
-            return currentWord = (matchingWordFound(key)) ? true : false;
+            return this.currentWord = (this.matchingWordFound(key)) ? true : false;
         } else { 
             return this.typeNextLetter(key);
         }
     }
     /* If word candidate found, return it. Otherwise return null */
     matchingWordFound(key) {
-        let wordCandidate = gameWords.find(function(gameWord) {
+        let wordCandidate = this.gameWords.find(function(gameWord) {
             if(key === gameWord.word[0]) return true;
         });
         return (wordCandidate === undefined) ? null : wordCandidate;
     }
     /* Returns true if key press matches the next letter. Otherwise returns false */
     typeNextLetter(keyPress) {
-        let nextChar = currentWord.word[currentWord.nextCharIdx];       
+        let nextChar = this.currentWord.word[this.currentWord.nextCharIdx];       
         if(keyPress !== nextChar) return false;
 
-        //Otherwise, color letter
-        let letters = currentWord.domElementRef.children;
-        let span = letters[currentWord.nextCharIdx];
-        setStyle(span);
+        //If keypress valid, color 
+        this.currentWord.colorNextLetter();
 
         //then progress the gameWord to the next letter
-        currentWord.nextCharIdx++;
+        this.currentWord.nextCharIdx++;
 
         //explode the gameWord if the word is finished
-        if(currentWord.nextCharIdx === currentWord.word.length) 
-            explodeWord(currentWord);  
+        if(this.currentWord.nextCharIdx === this.currentWord.word.length) 
+            explodeWord(this.currentWord);  
     }
     /* Remove the word, and play a fun animation */
     explodeWord(word) {
         //remove word from internal array
-        let idx = gameWords.indexOf(word);
-        gameWords.splice(idx, 1);
+        let idx = this.gameWords.indexOf(word);
+        this.gameWords.splice(idx, 1);
 
         word.explodeSelf();
-        currentWord = null;
+        this.currentWord = null;
+    }
+    explodeAll() {
+        this.gameWords.forEach((word) => {
+            word.explodeSelf();
+        });
     }
     addWord(gameWord) {
-        gameWords.push(gameWord);
+        this.gameWords.push(gameWord);
+    }
+    isEmpty() {
+        return (this.gameWords.length === 0) ? true : false;
     }
 }
 

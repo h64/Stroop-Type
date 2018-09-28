@@ -53,7 +53,7 @@ var gameCoordinator = (function() {
 
     return {
         startGame: startGame,
-        handleKeyPress, pipeKeyPressToGame
+        handleKeyPress: pipeKeyPressToGame
     }
 })();
   

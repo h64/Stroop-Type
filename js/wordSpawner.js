@@ -6,22 +6,25 @@ const WORD_LIST = ["form","slave","cannon","fireman","carpenter","voyage","needl
 
 class WordSpawner {
     constructor(wordManagerRef, numWordsToSpawn) {
-        this.gameBodyEl =  document.querySelector("main");
+        this.gameBodyEl = document.querySelector("main");
         this.numWordsSpawned = 0;
         this.wordManager = wordManagerRef;
-        this.spawnerID = this.startSpawner();        
+        this.spawnerID = this.startSpawner(numWordsToSpawn);        
     }
     startSpawner(numWordsToSpawn) {
         return setInterval(() => {
             let randIdx = Math.floor(Math.random() * WORD_LIST.length);
-            let gameWord = gameWordFactory.makeWord(WORD_LIST[randIdx]);
+            let gameWord = new GameWord(WORD_LIST[randIdx]);
             this.wordManager.addWord(gameWord);
-            gameBodyEl.prepend(gameWord.domElementRef); 
-            if(++numWordsSpawned === numWordsToSpawn) stopSpawner();
+            this.gameBodyEl.prepend(gameWord.domElementRef); 
+            if(++this.numWordsSpawned === numWordsToSpawn) this.stopSpawner();
         }, SPAWN_INTERVAL);
     }
     stopSpawner() {
-        clearInterval(spawnerID);
-        spawnerID = null;   
+        clearInterval(this.spawnerID);
+        this.spawnerID = null;   
+    }
+    isDoneSpawning() {
+        return this.spawnerID === null ? true : false;
     }
 }

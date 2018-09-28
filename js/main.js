@@ -2,8 +2,8 @@
 
 var main = (function() {
     /* Explicit file redefinitions */
-    gameCoordinator = window.gameCoordinator; //gameCoordinator.js
-    inputSanitizer = window.inputSanitizer; //inputHandler.js
+    // gameCoordinator = window.gameCoordinator; //gameCoordinator.js
+    // inputSanitizer = window.inputSanitizer; //inputHandler.js
 
     /* Local Variables */
     var menuIsListening = true;

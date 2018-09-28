@@ -12,6 +12,7 @@ class Game {
         }
         this.wordSpawner = null;
         this.wordManager = new WordManager();
+        this.listenForGameover();
         this.startRound();
     }
     startRound() {
@@ -20,15 +21,27 @@ class Game {
     }
     processKeyPress(key) {
         if(this.wordManager.keyPressProcessed(key)) {
-            keyMatches++;
-            keyPresses++;
+            this.stats.keyMatches++;
+            this.stats.keyPresses++;
         } else  {
-            keyPresses++;
+            this.stats.keyPresses++;
         }
+        if(this.wordSpawner.isDoneSpawning() && this.wordManager.isEmpty()) {
+            this.endRound();
+        }
+    }
+    endRound() {
+        console.log("ending round");
     }
     getStats() {
         return this.stats;
     }
+    listenForGameover() {
+        document.addEventListener("gameover", () => {
+            this.wordManager.explodeAll();
+        });
+    }
+
 }
 
 class EndlessGame extends Game {
