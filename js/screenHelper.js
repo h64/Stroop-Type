@@ -1,23 +1,48 @@
+const SHORT_DELAY = 800;
+const LONG_DELAY = 2000;
+
 var screenHelper = (function() {
-    function flashVisibility(element, persistLength, additionalCb) {
+    var domReferences = {
+        roundSummaryEl: {},
+        roundStartMsgEl: {},
+        gameOverMsgEl: {}
+    };
+    function initDomReferences() {
+        domReferences.roundSummaryEl = document.querySelector("#roundSummary");
+        domReferences.roundStartMsgEl = document.querySelector("#roundStartMsg");
+        domReferences.gameOverMsgEl = document.querySelector("#gameOverMsg");
+    }
+    function flashVisibility(element, delayLength, additionalCb) {
         setTimeout(() => {
-            this.toggleVisibility(element);
+            toggleVisibility(element);
             setTimeout(() => {
-                this.toggleVisibility(element);
+                toggleVisibility(element);
                 if(additionalCb) {
-                    // console.log("AFTER THE TIMEOUTS...");
                     additionalCb();
                 }
-            }, persistLength);
+            }, delayLength);
         }, SHORT_DELAY);
     }
     function toggleVisibility(element) {
         element.classList.toggle("hidden");
     }
-    function clearScreen() {
-        this.toggleVisibility(navEl);
+
+    function flashRoundSummary(cb) {
+        flashVisibility(domReferences.roundSummaryEl, LONG_DELAY, cb);
+    }
+    function flashRoundStartMsg(cb) {
+        flashVisibility(domReferences.roundStartMsgEl, SHORT_DELAY, cb);
+    }
+    function flashGameOver(cb) {
+        flashVisibility(domReferences.gameOverMsgEl, LONG_DELAY, cb);
     }
 
+    return {
+        init: initDomReferences,
+        flashRoundSummary: flashRoundSummary,
+        flashRoundStartMsg: flashRoundStartMsg,
+        flashGameOver: flashGameOver
+    }
 })();
 
 // /* Display Functions */

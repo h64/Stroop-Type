@@ -23,7 +23,7 @@ class Game {
         if(this.wordManager.keyPressProcessed(key)) {
             this.stats.keyMatches++;
             this.stats.keyPresses++;
-        } else  {
+        } else {
             this.stats.keyPresses++;
         }
         if(this.wordSpawner.isDoneSpawning() && this.wordManager.isEmpty()) {
@@ -32,15 +32,34 @@ class Game {
     }
     endRound() {
         console.log("ending round");
+        screenHelper.flashRoundSummary(() => {
+            screenHelper.flashRoundStartMsg(() => {
+                this.wordsToSpawn++;
+                this.startRound();
+            });
+        });
     }
     getStats() {
         return this.stats;
     }
     listenForGameover() {
-        document.addEventListener("gameover", () => {
-            this.wordManager.explodeAll();
-            console.log("game over");
-        });
+        document.addEventListener("gameover", this.endGame.bind(this));
+    }
+    endGame() {
+        this.unregisterListener();
+        this.wordManager.explodeAll();
+        // setTimeout(() => {
+            screenHelper.flashRoundSummary(() => {
+                screenHelper.flashGameOver(() => {
+                    setTimeout(() => {
+                        gameCoordinator.endGame();
+                    }, 1000)
+                });
+            });
+        // }, 500);          
+    }
+    unregisterListener() {
+        document.removeEventListener("gameover", this.endGame);
     }
 
 }

@@ -15,12 +15,7 @@ var gameCoordinator = (function() {
     var game = null;
 
     /* Dom Element References */
-    var domReferences = {
-        navEl: {},
-        roundSummaryEl: {},
-        roundMsgEl: {},
-        gameOverMsgEl: {}
-    };
+
 
     /* Functions */
     function startGame(gameType) {
@@ -53,6 +48,7 @@ var gameCoordinator = (function() {
 
     return {
         startGame: startGame,
+        endGame: endGame,
         handleKeyPress: pipeKeyPressToGame
     }
 })();

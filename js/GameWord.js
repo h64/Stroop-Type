@@ -1,6 +1,6 @@
 "use strict"
 
-const REMOVE_DELAY = 500;
+const REMOVE_DELAY = 800;
 const GAME_WIDTH = 500;
 const GAME_HEIGHT = 700;
 const MOVE_AMT = 20;

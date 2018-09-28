@@ -30,6 +30,7 @@ var main = (function() {
     document.addEventListener("DOMContentLoaded", function(evt) {
         header = document.querySelector("header");
         nav = document.querySelector("nav");
+        screenHelper.init();
         registerEventListeners();
     });
 
